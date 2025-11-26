@@ -1,0 +1,288 @@
+### NestJS Book Library API - REST Client
+### NestJS Buchbibliothek-API - REST Client
+
+### Base URL / Basis-URL
+@baseUrl = http://localhost:3000/api
+
+### JWT Token variable / JWT-Token-Variable
+### After login, replace with your actual token / Nach dem Login, durch echten Token ersetzen
+@token = your-token-here
+
+### User ID variable / Benutzer-ID-Variable
+### Replace with actual user ID from registration response / Mit tatsächlicher Benutzer-ID aus Registrierungsantwort ersetzen
+@userId = your-user-id-here
+
+### Book ID variable / Buch-ID-Variable
+### Replace with actual book ID from create response / Mit tatsächlicher Buch-ID aus Erstellungsantwort ersetzen
+@bookId = your-book-id-here
+
+###############################################################################
+# Authentication / Authentifizierung
+###############################################################################
+
+### Login - Get JWT Token / Anmelden - JWT-Token erhalten
+# @name login
+POST {{baseUrl}}/auth HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+###############################################################################
+# Users / Benutzer
+###############################################################################
+
+### Register a New User / Neuen Benutzer registrieren
+# @name registerUser
+POST {{baseUrl}}/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### Register Another User / Weiteren Benutzer registrieren
+POST {{baseUrl}}/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "johndoe",
+  "email": "john@example.com",
+  "password": "pass123"
+}
+
+### Get All Users (Protected) / Alle Benutzer abrufen (Geschützt)
+GET {{baseUrl}}/users HTTP/1.1
+Authorization: Bearer {{token}}
+
+### Get User by ID (Protected) / Benutzer nach ID abrufen (Geschützt)
+# Replace @userId variable with actual user ID from registration response
+# Ersetze @userId-Variable mit tatsächlicher Benutzer-ID aus Registrierungsantwort
+GET {{baseUrl}}/users/{{userId}} HTTP/1.1
+Authorization: Bearer {{token}}
+
+### Update User (Protected) / Benutzer aktualisieren (Geschützt)
+# Replace @userId variable with actual user ID / Ersetze @userId-Variable mit tatsächlicher Benutzer-ID
+PUT {{baseUrl}}/users/{{userId}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "username": "updateduser",
+  "email": "test@example.com",
+  "password": "newpassword123"
+}
+
+### Delete User (Protected) / Benutzer löschen (Geschützt)
+# Replace @userId variable with actual user ID / Ersetze @userId-Variable mit tatsächlicher Benutzer-ID
+DELETE {{baseUrl}}/users/{{userId}} HTTP/1.1
+Authorization: Bearer {{token}}
+
+###############################################################################
+# Books / Bücher
+###############################################################################
+
+### Get All Books (Protected) / Alle Bücher abrufen (Geschützt)
+GET {{baseUrl}}/books HTTP/1.1
+Authorization: Bearer {{token}}
+
+### Get Book by ID (Protected) / Buch nach ID abrufen (Geschützt)
+# Replace @bookId variable with actual book ID from create response
+# Ersetze @bookId-Variable mit tatsächlicher Buch-ID aus Erstellungsantwort
+GET {{baseUrl}}/books/{{bookId}} HTTP/1.1
+Authorization: Bearer {{token}}
+
+### Create Book - 1984 (Protected) / Buch erstellen - 1984 (Geschützt)
+# @name createBook1984
+POST {{baseUrl}}/books HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "1984",
+  "author": "George Orwell",
+  "publishedYear": 1949
+}
+
+### Create Book - The Great Gatsby (Protected) / Buch erstellen - Der große Gatsby (Geschützt)
+POST {{baseUrl}}/books HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "The Great Gatsby",
+  "author": "F. Scott Fitzgerald",
+  "publishedYear": 1925
+}
+
+### Create Book - To Kill a Mockingbird (Protected) / Buch erstellen - Wer die Nachtigall stört (Geschützt)
+POST {{baseUrl}}/books HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "To Kill a Mockingbird",
+  "author": "Harper Lee",
+  "publishedYear": 1960
+}
+
+### Create Book - Pride and Prejudice (Protected) / Buch erstellen - Stolz und Vorurteil (Geschützt)
+POST {{baseUrl}}/books HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "Pride and Prejudice",
+  "author": "Jane Austen",
+  "publishedYear": 1813
+}
+
+### Update Book (Protected) / Buch aktualisieren (Geschützt)
+# Replace @bookId variable with actual book ID / Ersetze @bookId-Variable mit tatsächlicher Buch-ID
+PUT {{baseUrl}}/books/{{bookId}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "Nineteen Eighty-Four",
+  "author": "George Orwell",
+  "publishedYear": 1949
+}
+
+### Delete Book (Protected) / Buch löschen (Geschützt)
+# Replace @bookId variable with actual book ID / Ersetze @bookId-Variable mit tatsächlicher Buch-ID
+DELETE {{baseUrl}}/books/{{bookId}} HTTP/1.1
+Authorization: Bearer {{token}}
+
+###############################################################################
+# Error Testing / Fehlertest
+###############################################################################
+
+### Test: Missing Token (Should return 401) / Test: Fehlender Token (Sollte 401 zurückgeben)
+GET {{baseUrl}}/books HTTP/1.1
+
+### Test: Invalid Token (Should return 401) / Test: Ungültiger Token (Sollte 401 zurückgeben)
+GET {{baseUrl}}/books HTTP/1.1
+Authorization: Bearer invalid_token_here
+
+### Test: Invalid Login Credentials (Should return 401) / Test: Ungültige Anmeldedaten (Sollte 401 zurückgeben)
+POST {{baseUrl}}/auth HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "wrong@example.com",
+  "password": "wrongpassword"
+}
+
+### Test: Validation Error - Missing Required Fields (Should return 400)
+### Test: Validierungsfehler - Fehlende Pflichtfelder (Sollte 400 zurückgeben)
+POST {{baseUrl}}/books HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "Incomplete Book"
+}
+
+### Test: Validation Error - Invalid Email Format (Should return 400)
+### Test: Validierungsfehler - Ungültiges E-Mail-Format (Sollte 400 zurückgeben)
+POST {{baseUrl}}/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "not-an-email",
+  "password": "password123"
+}
+
+### Test: Get Non-Existent Book (Should return 404) / Test: Nicht existierendes Buch abrufen (Sollte 404 zurückgeben)
+GET {{baseUrl}}/books/00000000-0000-0000-0000-000000000000 HTTP/1.1
+Authorization: Bearer {{token}}
+
+### Test: Duplicate User Email (Should return 409) / Test: Doppelte Benutzer-E-Mail (Sollte 409 zurückgeben)
+# Run this after registering a user with the same email
+# Führe dies aus, nachdem ein Benutzer mit derselben E-Mail registriert wurde
+POST {{baseUrl}}/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "duplicate",
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+###############################################################################
+# Complete Workflow Example / Vollständiges Workflow-Beispiel
+###############################################################################
+
+### 1. Register User / Benutzer registrieren
+POST {{baseUrl}}/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "workflowuser",
+  "email": "workflow@example.com",
+  "password": "workflow123"
+}
+
+### 2. Login (Copy the token from response) / Anmelden (Token aus Antwort kopieren)
+POST {{baseUrl}}/auth HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "workflow@example.com",
+  "password": "workflow123"
+}
+
+### 3. Create a Book (Use token from step 2) / Buch erstellen (Token aus Schritt 2 verwenden)
+POST {{baseUrl}}/books HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "The Hobbit",
+  "author": "J.R.R. Tolkien",
+  "publishedYear": 1937
+}
+
+### 4. Get All Books (Use token from step 2) / Alle Bücher abrufen (Token aus Schritt 2 verwenden)
+GET {{baseUrl}}/books HTTP/1.1
+Authorization: Bearer {{token}}
+
+###############################################################################
+# Instructions / Anleitung
+###############################################################################
+
+# HOW TO USE (ENGLISH):
+# 1. Install the "REST Client" extension by Huachao Mao in VS Code
+# 2. Make sure the server is running (npm run start:dev)
+# 3. Click "Send Request" above any ### line
+# 4. After logging in, copy the token from the response
+# 5. Replace the @token variable at the top with your actual token
+#    Example: @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+# 6. For endpoints with {userId} or {bookId}, replace with actual IDs from responses
+
+# VERWENDUNG (DEUTSCH):
+# 1. Installiere die "REST Client"-Erweiterung von Huachao Mao in VS Code
+# 2. Stelle sicher, dass der Server läuft (npm run start:dev)
+# 3. Klicke auf "Send Request" über jeder ### Zeile
+# 4. Nach dem Anmelden, kopiere den Token aus der Antwort
+# 5. Ersetze die @token-Variable oben durch deinen echten Token
+#    Beispiel: @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+# 6. Für Endpunkte mit {userId} oder {bookId}, ersetze diese durch tatsächliche IDs aus den Antworten
+
+# TIPS (ENGLISH):
+# - Use Ctrl+Alt+R (Windows) or Cmd+Alt+R (Mac) to send request
+# - Responses appear in a separate panel
+# - You can use variables like {{baseUrl}} and {{token}}
+# - Named requests (# @name) can reference their response variables
+
+# TIPPS (DEUTSCH):
+# - Verwende Strg+Alt+R (Windows) oder Cmd+Alt+R (Mac) zum Senden von Anfragen
+# - Antworten erscheinen in einem separaten Panel
+# - Du kannst Variablen wie {{baseUrl}} und {{token}} verwenden
+# - Benannte Anfragen (# @name) können auf ihre Antwortvariablen verweisen
