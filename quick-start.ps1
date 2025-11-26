@@ -22,10 +22,10 @@ Write-Host ""
 Write-Host "1. Registering test user..." -ForegroundColor Cyan
 try {
     $userResponse = Invoke-RestMethod -Uri "http://localhost:3000/api/users" -Method Post -ContentType "application/json" -Body '{"username":"testuser","email":"test@example.com","password":"password123"}'
-    Write-Host "   ✓ User created: $($userResponse.username) ($($userResponse.email))" -ForegroundColor Green
     $userId = $userResponse.id
+    Write-Host "   User created: $($userResponse.username) - $($userResponse.email)" -ForegroundColor Green
 } catch {
-    Write-Host "   ✗ Failed to create user (may already exist)" -ForegroundColor Yellow
+    Write-Host "   Failed to create user - may already exist" -ForegroundColor Yellow
 }
 
 Write-Host ""
@@ -35,9 +35,9 @@ Write-Host "2. Logging in..." -ForegroundColor Cyan
 try {
     $authResponse = Invoke-RestMethod -Uri "http://localhost:3000/api/auth" -Method Post -ContentType "application/json" -Body '{"email":"test@example.com","password":"password123"}'
     $token = $authResponse.token
-    Write-Host "   ✓ Login successful! Token obtained." -ForegroundColor Green
+    Write-Host "   Login successful! Token obtained." -ForegroundColor Green
 } catch {
-    Write-Host "   ✗ Login failed: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "   Login failed" -ForegroundColor Red
     Stop-Job -Job $job
     Remove-Job -Job $job
     exit
@@ -50,10 +50,10 @@ Write-Host "3. Creating a book..." -ForegroundColor Cyan
 try {
     $headers = @{ Authorization = "Bearer $token" }
     $bookResponse = Invoke-RestMethod -Uri "http://localhost:3000/api/books" -Method Post -ContentType "application/json" -Headers $headers -Body '{"title":"1984","author":"George Orwell","publishedYear":1949}'
-    Write-Host "   ✓ Book created: '$($bookResponse.title)' by $($bookResponse.author)" -ForegroundColor Green
     $bookId = $bookResponse.id
+    Write-Host "   Book created: $($bookResponse.title) by $($bookResponse.author)" -ForegroundColor Green
 } catch {
-    Write-Host "   ✗ Failed to create book: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "   Failed to create book" -ForegroundColor Red
 }
 
 Write-Host ""
@@ -62,18 +62,18 @@ Write-Host ""
 Write-Host "4. Retrieving all books..." -ForegroundColor Cyan
 try {
     $books = Invoke-RestMethod -Uri "http://localhost:3000/api/books" -Method Get -Headers $headers
-    Write-Host "   ✓ Found $($books.Count) book(s)" -ForegroundColor Green
+    Write-Host "   Found $($books.Count) book(s)" -ForegroundColor Green
     foreach ($book in $books) {
-        Write-Host "     - $($book.title) by $($book.author) ($($book.publishedYear))" -ForegroundColor White
+        Write-Host "     - $($book.title) by $($book.author) - Year: $($book.publishedYear)" -ForegroundColor White
     }
 } catch {
-    Write-Host "   ✗ Failed to get books: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "   Failed to get books" -ForegroundColor Red
 }
 
 Write-Host ""
 Write-Host "=== API is running! ===" -ForegroundColor Green
 Write-Host ""
-Write-Host "Your JWT Token (save this for testing):" -ForegroundColor Yellow
+Write-Host "Your JWT Token:" -ForegroundColor Yellow
 Write-Host $token -ForegroundColor White
 Write-Host ""
 Write-Host "Test the API using:" -ForegroundColor Cyan
