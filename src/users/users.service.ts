@@ -2,16 +2,16 @@
 // Importiere notwendige Dekoratoren und Exceptions aus NestJS
 import {
   Injectable, // Makes class injectable as a provider / Macht Klasse als Provider injizierbar
-  NotFoundException, // Exception for 404 errors / Exception f\u00fcr 404-Fehler
-  ConflictException, // Exception for 409 conflicts / Exception f\u00fcr 409-Konflikte
+  NotFoundException, // Exception for 404 errors / Exception für 404-Fehler
+  ConflictException, // Exception for 409 conflicts / Exception für 409-Konflikte
 } from "@nestjs/common";
 
 // Import User interface for type definitions
-// Importiere User-Interface f\u00fcr Typdefinitionen
+// Importiere User-Interface für Typdefinitionen
 import { User } from "./interfaces/user.interface";
 
 // Import DTOs for data validation and transformation
-// Importiere DTOs f\u00fcr Datenvalidierung und -transformation
+// Importiere DTOs für Datenvalidierung und -transformation
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 
@@ -20,11 +20,11 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import { v4 as uuidv4 } from "uuid";
 
 // Import bcrypt for password hashing
-// Importiere bcrypt f\u00fcr Passwort-Hashing
+// Importiere bcrypt für Passwort-Hashing
 import * as bcrypt from "bcrypt";
 
 // Service class containing business logic for user operations
-// Service-Klasse mit Gesch\u00e4ftslogik f\u00fcr Benutzer-Operationen
+// Service-Klasse mit Geschäftslogik für Benutzer-Operationen
 @Injectable()
 export class UsersService {
   // In-memory array to store users (replace with database in production)
@@ -35,7 +35,7 @@ export class UsersService {
   // Hole alle Benutzer ohne Passwort-Feld
   async findAll(): Promise<Omit<User, "password">[]> {
     // Map through users and exclude password from each user object
-    // Durchlaufe Benutzer und schlie\u00dfe Passwort von jedem Benutzer-Objekt aus
+    // Durchlaufe Benutzer und schließe Passwort von jedem Benutzer-Objekt aus
     return this.users.map(({ password, ...user }) => user);
   }
 
@@ -53,13 +53,13 @@ export class UsersService {
     }
 
     // Destructure to exclude password from response
-    // Destrukturiere, um Passwort aus Antwort auszuschlie\u00dfen
+    // Destrukturiere, um Passwort aus Antwort auszuschließen
     const { password, ...result } = user;
     return result;
   }
 
   // Find user by email (includes password for authentication)
-  // Finde Benutzer nach E-Mail (inklusive Passwort f\u00fcr Authentifizierung)
+  // Finde Benutzer nach E-Mail (inklusive Passwort für Authentifizierung)
   async findByEmail(email: string): Promise<User | undefined> {
     return this.users.find((u) => u.email === email);
   }
@@ -68,7 +68,7 @@ export class UsersService {
   // Erstelle einen neuen Benutzer mit gehashtem Passwort
   async create(createUserDto: CreateUserDto): Promise<Omit<User, "password">> {
     // Check if user with email already exists
-    // Pr\u00fcfe, ob Benutzer mit E-Mail bereits existiert
+    // Prüfe, ob Benutzer mit E-Mail bereits existiert
     const existingUser = await this.findByEmail(createUserDto.email);
     if (existingUser) {
       // Throw 409 Conflict if email is already taken
@@ -90,11 +90,11 @@ export class UsersService {
     };
 
     // Add user to the array
-    // F\u00fcge Benutzer zum Array hinzu
+    // Füge Benutzer zum Array hinzu
     this.users.push(user);
 
     // Return user without password field
-    // Gib Benutzer ohne Passwort-Feld zur\u00fcck
+    // Gib Benutzer ohne Passwort-Feld zurück
     const { password, ...result } = user;
     return result;
   }
@@ -133,13 +133,13 @@ export class UsersService {
     this.users[userIndex] = updatedUser;
 
     // Return user without password field
-    // Gib Benutzer ohne Passwort-Feld zur\u00fcck
+    // Gib Benutzer ohne Passwort-Feld zurück
     const { password, ...result } = updatedUser;
     return result;
   }
 
   // Delete a user by ID
-  // L\u00f6sche einen Benutzer nach ID
+  // Lösche einen Benutzer nach ID
   async delete(id: string): Promise<void> {
     // Find the index of the user in the array
     // Finde den Index des Benutzers im Array
