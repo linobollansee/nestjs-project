@@ -1,9 +1,9 @@
-NestJS Project
-Project Overview
+# NestJS Project
+## Project Overview
 Create a simple RESTful API using NestJS that allows users to access and manage books from a library.
 
 Follow the OpenAPI specification provided below to implement the API endpoints.
-
+```yaml
 openapi: 3.0.3
 info:
 title: Book Library API
@@ -127,10 +127,10 @@ author:
 type: string
 publishedYear:
 type: integer
-
-Bonus: Users
+```
+## Bonus: Users
 Extend your application to include user management and authentication.
-
+```yaml
 openapi: 3.0.3
 info:
 title: Book Library API
@@ -402,3 +402,4 @@ type: integer
       properties:
         token:
           type: string
+```
