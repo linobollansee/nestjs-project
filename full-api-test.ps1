@@ -70,6 +70,8 @@ Write-Host ""
 
 # Test 1: Create first user | Test 1: Ersten Benutzer erstellen
 Write-Host "Test 1: POST /api/users (Create User 1)" -ForegroundColor Cyan
+Write-Host "  Sending request to: $baseUrl/users" -ForegroundColor Gray
+Write-Host "  Method: POST | Body: username=testuser1, email=test1@example.com" -ForegroundColor Gray
 try {
     # Send POST request to create first user | POST-Anfrage zum Erstellen des ersten Benutzers senden
     $user1Response = Invoke-RestMethod -Uri "$baseUrl/users" -Method Post -ContentType "application/json" -Body '{"username":"testuser1","email":"test1@example.com","password":"password123"}'
@@ -86,6 +88,8 @@ try {
 
 # Test 2: Create second user | Test 2: Zweiten Benutzer erstellen
 Write-Host "Test 2: POST /api/users (Create User 2)" -ForegroundColor Cyan
+Write-Host "  Sending request to: $baseUrl/users" -ForegroundColor Gray
+Write-Host "  Method: POST | Body: username=testuser2, email=test2@example.com" -ForegroundColor Gray
 try {
     # Send POST request to create second user | POST-Anfrage zum Erstellen des zweiten Benutzers senden
     $user2Response = Invoke-RestMethod -Uri "$baseUrl/users" -Method Post -ContentType "application/json" -Body '{"username":"testuser2","email":"test2@example.com","password":"password456"}'
@@ -106,6 +110,8 @@ Write-Host ""
 
 # Test 3: Login with first user | Test 3: Mit erstem Benutzer anmelden
 Write-Host "Test 3: POST /api/auth (Login User 1)" -ForegroundColor Cyan
+Write-Host "  Sending request to: $baseUrl/auth" -ForegroundColor Gray
+Write-Host "  Method: POST | Body: email=test1@example.com, password=password123" -ForegroundColor Gray
 try {
     # Send POST request to authenticate user1 | POST-Anfrage zur Authentifizierung von Benutzer1 senden
     $authResponse = Invoke-RestMethod -Uri "$baseUrl/auth" -Method Post -ContentType "application/json" -Body '{"email":"test1@example.com","password":"password123"}'
@@ -113,6 +119,11 @@ try {
     $token = $authResponse.token
     # Display test result as passed | Testergebnis als bestanden anzeigen
     Show-TestResult -TestName "Login User 1" -Success $true -Details "Token obtained"
+    # Display the JWT token immediately | JWT-Token sofort anzeigen
+    Write-Host ""
+    Write-Host "JWT Token | JWT-Token:" -ForegroundColor Yellow
+    Write-Host $token -ForegroundColor White
+    Write-Host ""
 } catch {
     # Display test result as failed | Testergebnis als fehlgeschlagen anzeigen
     Show-TestResult -TestName "Login User 1" -Success $false -Details $_.Exception.Message
@@ -121,6 +132,7 @@ try {
 }
 
 # Create authorization header with JWT token | Autorisierungs-Header mit JWT-Token erstellen
+Write-Host "Creating authorization header with JWT token..." -ForegroundColor Gray
 $headers = @{ Authorization = "Bearer $token" }
 
 # Print section separator | Abschnittstrenner ausgeben
@@ -131,6 +143,8 @@ Write-Host ""
 
 # Test 4: Get all users | Test 4: Alle Benutzer abrufen
 Write-Host "Test 4: GET /api/users (Get All Users)" -ForegroundColor Cyan
+Write-Host "  Sending request to: $baseUrl/users" -ForegroundColor Gray
+Write-Host "  Method: GET | Headers: Authorization=Bearer $token" -ForegroundColor Gray
 try {
     # Send GET request to retrieve all users | GET-Anfrage zum Abrufen aller Benutzer senden
     $allUsers = Invoke-RestMethod -Uri "$baseUrl/users" -Method Get -Headers $headers
@@ -143,6 +157,8 @@ try {
 
 # Test 5: Get user by ID | Test 5: Benutzer nach ID abrufen
 Write-Host "Test 5: GET /api/users/:id (Get User 1 by ID)" -ForegroundColor Cyan
+Write-Host "  Sending request to: $baseUrl/users/$user1Id" -ForegroundColor Gray
+Write-Host "  Method: GET | Headers: Authorization=Bearer $token" -ForegroundColor Gray
 try {
     # Send GET request to retrieve specific user | GET-Anfrage zum Abrufen eines bestimmten Benutzers senden
     $user1 = Invoke-RestMethod -Uri "$baseUrl/users/$user1Id" -Method Get -Headers $headers
@@ -161,6 +177,8 @@ Write-Host ""
 
 # Test 6: Update user | Test 6: Benutzer aktualisieren
 Write-Host "Test 6: PUT /api/users/:id (Update User 1)" -ForegroundColor Cyan
+Write-Host "  Sending request to: $baseUrl/users/$user1Id" -ForegroundColor Gray
+Write-Host "  Method: PUT | Body: username=testuser1_updated, email=test1@example.com" -ForegroundColor Gray
 try {
     # Send PUT request to update user with all required fields | PUT-Anfrage zum Aktualisieren des Benutzers mit allen erforderlichen Feldern senden
     $updatedUser = Invoke-RestMethod -Uri "$baseUrl/users/$user1Id" -Method Put -ContentType "application/json" -Headers $headers -Body '{"username":"testuser1_updated","email":"test1@example.com","password":"newpassword123"}'
@@ -179,6 +197,8 @@ Write-Host ""
 
 # Test 7: Create first book | Test 7: Erstes Buch erstellen
 Write-Host "Test 7: POST /api/books (Create Book 1)" -ForegroundColor Cyan
+Write-Host "  Sending request to: $baseUrl/books" -ForegroundColor Gray
+Write-Host "  Method: POST | Body: title=1984, author=George Orwell, year=1949" -ForegroundColor Gray
 try {
     # Send POST request to create first book | POST-Anfrage zum Erstellen des ersten Buches senden
     $book1Response = Invoke-RestMethod -Uri "$baseUrl/books" -Method Post -ContentType "application/json" -Headers $headers -Body '{"title":"1984","author":"George Orwell","publishedYear":1949}'
@@ -193,6 +213,8 @@ try {
 
 # Test 8: Create second book | Test 8: Zweites Buch erstellen
 Write-Host "Test 8: POST /api/books (Create Book 2)" -ForegroundColor Cyan
+Write-Host "  Sending request to: $baseUrl/books" -ForegroundColor Gray
+Write-Host "  Method: POST | Body: title=To Kill a Mockingbird, author=Harper Lee, year=1960" -ForegroundColor Gray
 try {
     # Send POST request to create second book | POST-Anfrage zum Erstellen des zweiten Buches senden
     $book2Response = Invoke-RestMethod -Uri "$baseUrl/books" -Method Post -ContentType "application/json" -Headers $headers -Body '{"title":"To Kill a Mockingbird","author":"Harper Lee","publishedYear":1960}'
@@ -207,6 +229,8 @@ try {
 
 # Test 9: Create third book | Test 9: Drittes Buch erstellen
 Write-Host "Test 9: POST /api/books (Create Book 3)" -ForegroundColor Cyan
+Write-Host "  Sending request to: $baseUrl/books" -ForegroundColor Gray
+Write-Host "  Method: POST | Body: title=The Great Gatsby, author=F. Scott Fitzgerald, year=1925" -ForegroundColor Gray
 try {
     # Send POST request to create third book | POST-Anfrage zum Erstellen des dritten Buches senden
     $book3Response = Invoke-RestMethod -Uri "$baseUrl/books" -Method Post -ContentType "application/json" -Headers $headers -Body '{"title":"The Great Gatsby","author":"F. Scott Fitzgerald","publishedYear":1925}'
@@ -227,6 +251,8 @@ Write-Host ""
 
 # Test 10: Get all books | Test 10: Alle Buecher abrufen
 Write-Host "Test 10: GET /api/books (Get All Books)" -ForegroundColor Cyan
+Write-Host "  Sending request to: $baseUrl/books" -ForegroundColor Gray
+Write-Host "  Method: GET | Headers: Authorization=Bearer $token" -ForegroundColor Gray
 try {
     # Send GET request to retrieve all books | GET-Anfrage zum Abrufen aller Buecher senden
     $allBooks = Invoke-RestMethod -Uri "$baseUrl/books" -Method Get -Headers $headers
@@ -244,6 +270,8 @@ try {
 
 # Test 11: Get book by ID | Test 11: Buch nach ID abrufen
 Write-Host "Test 11: GET /api/books/:id (Get Book 1 by ID)" -ForegroundColor Cyan
+Write-Host "  Sending request to: $baseUrl/books/$book1Id" -ForegroundColor Gray
+Write-Host "  Method: GET | Headers: Authorization=Bearer $token" -ForegroundColor Gray
 try {
     # Send GET request to retrieve specific book | GET-Anfrage zum Abrufen eines bestimmten Buches senden
     $book1 = Invoke-RestMethod -Uri "$baseUrl/books/$book1Id" -Method Get -Headers $headers
@@ -262,6 +290,8 @@ Write-Host ""
 
 # Test 12: Update book | Test 12: Buch aktualisieren
 Write-Host "Test 12: PUT /api/books/:id (Update Book 2)" -ForegroundColor Cyan
+Write-Host "  Sending request to: $baseUrl/books/$book2Id" -ForegroundColor Gray
+Write-Host "  Method: PUT | Body: title=To Kill a Mockingbird - Special Edition, year=1961" -ForegroundColor Gray
 try {
     # Send PUT request to update book with all required fields | PUT-Anfrage zum Aktualisieren des Buches mit allen erforderlichen Feldern senden
     $updatedBook = Invoke-RestMethod -Uri "$baseUrl/books/$book2Id" -Method Put -ContentType "application/json" -Headers $headers -Body '{"title":"To Kill a Mockingbird - Special Edition","author":"Harper Lee","publishedYear":1961}'
@@ -280,6 +310,8 @@ Write-Host ""
 
 # Test 13: Delete a book | Test 13: Ein Buch loeschen
 Write-Host "Test 13: DELETE /api/books/:id (Delete Book 3)" -ForegroundColor Cyan
+Write-Host "  Sending request to: $baseUrl/books/$book3Id" -ForegroundColor Gray
+Write-Host "  Method: DELETE | Headers: Authorization=Bearer $token" -ForegroundColor Gray
 try {
     # Send DELETE request to remove book | DELETE-Anfrage zum Entfernen des Buches senden
     Invoke-RestMethod -Uri "$baseUrl/books/$book3Id" -Method Delete -Headers $headers
@@ -292,6 +324,7 @@ try {
 
 # Test 14: Verify book was deleted | Test 14: Ueberpruefen, dass Buch geloescht wurde
 Write-Host "Test 14: GET /api/books (Verify Book 3 Deleted)" -ForegroundColor Cyan
+Write-Host "  Verifying deletion by fetching all books..." -ForegroundColor Gray
 try {
     # Send GET request to retrieve all books | GET-Anfrage zum Abrufen aller Buecher senden
     $booksAfterDelete = Invoke-RestMethod -Uri "$baseUrl/books" -Method Get -Headers $headers
@@ -312,6 +345,8 @@ Write-Host ""
 
 # Test 15: Delete a user | Test 15: Einen Benutzer loeschen
 Write-Host "Test 15: DELETE /api/users/:id (Delete User 2)" -ForegroundColor Cyan
+Write-Host "  Sending request to: $baseUrl/users/$user2Id" -ForegroundColor Gray
+Write-Host "  Method: DELETE | Headers: Authorization=Bearer $token" -ForegroundColor Gray
 try {
     # Send DELETE request to remove user | DELETE-Anfrage zum Entfernen des Benutzers senden
     Invoke-RestMethod -Uri "$baseUrl/users/$user2Id" -Method Delete -Headers $headers
@@ -324,6 +359,7 @@ try {
 
 # Test 16: Verify user was deleted | Test 16: Ueberpruefen, dass Benutzer geloescht wurde
 Write-Host "Test 16: GET /api/users (Verify User 2 Deleted)" -ForegroundColor Cyan
+Write-Host "  Verifying deletion by fetching all users..." -ForegroundColor Gray
 try {
     # Send GET request to retrieve all users | GET-Anfrage zum Abrufen aller Benutzer senden
     $usersAfterDelete = Invoke-RestMethod -Uri "$baseUrl/users" -Method Get -Headers $headers
@@ -339,6 +375,22 @@ try {
 # Print final summary | Abschliessende Zusammenfassung ausgeben
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "TEST SUMMARY | TESTZUSAMMENFASSUNG" -ForegroundColor Cyan
+Write-Host "========================================" -ForegroundColor Cyan
+# Calculate total tests | Gesamtanzahl der Tests berechnen
+$totalTests = $testsPassed + $testsFailed
+# Display total tests count | Gesamttestanzahl anzeigen
+Write-Host "Total Tests | Gesamt: $totalTests" -ForegroundColor White
+# Display passed tests count in green | Anzahl bestandener Tests in Gruen anzeigen
+Write-Host "Passed | Bestanden: $testsPassed" -ForegroundColor Green
+# Display failed tests count in red | Anzahl fehlgeschlagener Tests in Rot anzeigen
+Write-Host "Failed | Fehlgeschlagen: $testsFailed" -ForegroundColor Red
+# Calculate success rate | Erfolgsrate berechnen
+$successRate = if ($totalTests -gt 0) { [math]::Round(($testsPassed / $totalTests) * 100, 2) } else { 0 }
+# Display success rate | Erfolgsrate anzeigen
+Write-Host "Success Rate | Erfolgsrate: $successRate%" -ForegroundColor Cyan
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host ""
 # Determine exit code based on test results | Exitcode basierend auf Testergebnissen bestimmen
 if ($testsFailed -eq 0) {
     # All tests passed | Alle Tests bestanden
@@ -363,23 +415,6 @@ if ($testsFailed -eq 0) {
     # Exit with success code | Mit Erfolgscode beenden
     exit 0
 } else {
-    # Exit with error code | Mit Fehlercode beenden
-    exit 1
-}successRate = if ($totalTests -gt 0) { [math]::Round(($testsPassed / $totalTests) * 100, 2) } else { 0 }
-# Display success rate | Erfolgsrate anzeigen
-Write-Host "Success Rate | Erfolgsrate: $successRate%" -ForegroundColor Cyan
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host ""
-
-# Determine exit code based on test results | Exitcode basierend auf Testergebnissen bestimmen
-if ($testsFailed -eq 0) {
-    # All tests passed | Alle Tests bestanden
-    Write-Host "All tests passed! | Alle Tests bestanden!" -ForegroundColor Green
-    # Exit with success code | Mit Erfolgscode beenden
-    exit 0
-} else {
-    # Some tests failed | Einige Tests fehlgeschlagen
-    Write-Host "Some tests failed. | Einige Tests sind fehlgeschlagen." -ForegroundColor Red
     # Exit with error code | Mit Fehlercode beenden
     exit 1
 }
